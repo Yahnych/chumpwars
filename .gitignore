@@ -1,7 +1,9 @@
 .idea
 d.ts
 *.map
-*.js
+
+public/*.js
+app.js
 
 lib-cov
 *.seed
