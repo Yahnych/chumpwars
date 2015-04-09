@@ -18,7 +18,7 @@ module game {
 	export class MapGeneratorBasic extends MapGenerator {
 		
 		seed = 0;
-		resolution = 7;    // how small are the islands
+		resolution = 7;    // how many islands are there
 		threshold = 0.1;   // value above which the noise is considered ground
 		spacing = 0.3;     // gaps between islands
 		color = [255,255,0];
@@ -30,7 +30,7 @@ module game {
 		private rollParams():void {
 			noise.seed(this.seed);
 			var rand = new game.Random(this.seed);
-			this.resolution = rand.nextFloat() * 10 + 5;
+			this.resolution = rand.nextFloat() * 20 + 5;
 			this.threshold = rand.nextFloat() * 0.2;
 			this.spacing = rand.nextFloat() * 0.5;
 			this.color = [

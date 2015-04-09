@@ -7,6 +7,24 @@ body {
 	border: 1px solid;
 } 
 
+#chat {
+	position: fixed;
+	left: 840px;
+	background: rgba(0,0,0,0.1);
+	padding: 6px;
+	width: 240px;
+	overflow-x: hidden;
+}
+#chat-messages {
+	height: 400px;
+	overflow-y: scroll;
+}
+
+#chat-input {
+	margin: 4px;
+	width: 224px;
+}
+
 a {
   color: #00B7FF;
 }
