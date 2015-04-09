@@ -1,4 +1,4 @@
-module game {
+module util {
 	
 	var RAND_MAX = 0x7fffffff | 0;
 	var RAND_MIN = 0x80000000 | 0;
