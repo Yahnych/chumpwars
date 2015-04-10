@@ -9,10 +9,10 @@ module entity {
 		y: number;
 		width: number;
 		height: number;
-		velX: number = 0;
-		velY: number = 0;
-		gravity: number = 10.0;
-		bounce: number = 0;
+		velX = 0;
+		velY = 0;
+		gravity = 200.0;
+		bounce = 0;
 		
 		constructor(x = 0, y = 0, width = 0, height = 0) {
 			this.x = x;
@@ -27,102 +27,71 @@ module entity {
 		// Called when the entity is removed from the world
 		removed():void {}
 		
-		//Check if an object collides with the map at the given position
 		collide(x: number, y: number): boolean {
-			//var oldX = this.x;
-			//var oldY = this.y;
-			//this.x = x;
-			//this.y = y;
+			var oldX = this.x;
+			var oldY = this.y;
+			this.x = x;
+			this.y = y;
 			// res = check collision
-			//this.x = oldX;
-			//this.y = oldY;
+			this.x = oldX;
+			this.y = oldY;
+			return false;
+		}
+		
+		//Check if an object collides with the map at the given position
+		collideMap(x=this.x, y=this.y): boolean {
 			for (var i=x; i<x+this.width; i++) {
-				for (var j=y; j<y+this.height; j++) {
+				for (var j = y; j < y + this.height; j++) {
 					if (this.world.isSolid(i, j)) {
 						return true;
 					}
 				}
 			}
-				
 			return false;
 		}
 		
-		resolveMovementX(): void {
-			var amount = Math.abs(this.velX) * Game.DT_PER_TICK;
-			var sign = this.velX > 0 ? 1 : -1;
+		
+		private residueX = 0;
+		private residueY = 0;
+		
+		resolveMovementX(dx:number): void {
+			this.residueX += dx;
+			dx = Math.round(this.residueX);
+			this.residueX -= dx;
 			
-			while (amount >= 1) {
-				this.x += sign;
-				amount--;
-				if (this.collide(this.x, this.y)) {
+			var sign = dx > 0 ? 1 : -1;
+			
+			while (dx != 0) {
+				if (this.collideMap(this.x+sign, this.y)) {
 					this.velX *= -this.bounce;
-					this.x -= sign;
-					sign = -sign;
+					break;
 				}
+				this.x += sign;
+				dx -= sign;
 			}
-			
-			/*amount *= sign; // does this work?
-			
-			var residue = this.x % 1;
-			this.x += amount;
-			if (sign == -1) {
-				if (residue + amount <= 0) {
-					if (this.collide(this.x, this.y)) {
-						this.velX *= -this.bounce;
-						this.x -= amount;
-					}
-				}
-			} else {
-				if (residue + amount >= 1) {
-					if (this.collide(this.x, this.y)) {
-						this.velX *= -this.bounce;
-						this.x -= amount;
-					}
-				}
-			}*/
 		}
 		
-		resolveMovementY():void {
-			var amount = Math.abs(this.velY) * Game.DT_PER_TICK;
-			var sign = this.velY > 0 ? 1 : -1;
+		resolveMovementY(dy:number):void {
+			this.residueY += dy;
+			dy = Math.round(this.residueY);
+			this.residueY -= dy;
 			
-			while (amount >= 1) {
-				this.y += sign;
-				amount--;
-				if (this.collide(this.x, this.y)) {
+			var sign = dy > 0 ? 1 : -1;
+			
+			while (dy != 0) {
+				if (this.collideMap(this.x, this.y+sign)) {
 					this.velY *= -this.bounce;
-					this.y -= sign;
-					sign = -sign;
+					break;
 				}
+				this.y += sign;
+				dy -= sign;
 			}
-			
-			/*amount *= sign; // ditto?
-			
-			var residue = this.y % 1;
-			this.y += amount;
-			if (sign == -1) {
-				if (residue + amount <= 0) {
-					if (this.collide(this.x, this.y)) {
-						this.velY *= -this.bounce;
-						this.y -= amount;
-					}
-				}
-			} else {
-				if(residue + amount >= 1) {
-					if (this.collide(this.x, this.y)) {
-						this.velY *= -this.bounce;
-						this.y -= amount;
-					}
-				}
-			}*/
 		}
 		
 		tick(): void {
 			this.velY += this.gravity * Game.DT_PER_TICK;
-			this.resolveMovementX();
-			var startY = this.y;
-			this.resolveMovementY();
-			console.log(startY, this.y, this.velY);
+			this.resolveMovementX(this.velX * Game.DT_PER_TICK);
+			this.resolveMovementY(this.velY * Game.DT_PER_TICK);
 		}
 		
 		render():void {

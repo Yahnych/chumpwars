@@ -12,13 +12,15 @@ import World = world.World;
 import PerlinGenerator = gen.PerlinGenerator;
 
 module Game {
-	export var DT_PER_TICK = 0.02;
+	export var TICK_RATE = 60;
+	export var DT_PER_TICK = 1/TICK_RATE;
 	export var MIN_SPEED = DT_PER_TICK * 2;
 }
 
 window.onload = function () {
-	var canvas = <HTMLCanvasElement> document.getElementById('c');
-	var world = new World(canvas);
+	var mapCanvas = <HTMLCanvasElement> document.getElementById('map-canvas');
+	var entityCanvas = <HTMLCanvasElement> document.getElementById('entity-canvas');
+	var world = new World(mapCanvas, entityCanvas);
 	var gen = new PerlinGenerator(world);
 
 	Chat.init();
@@ -48,10 +50,7 @@ window.onload = function () {
 	
 	setInterval(function () {
 		// really we need to pop from a buffer here this and only tick if there are input frames available from the server
-		//world.tick();
-	}, Game.DT_PER_TICK * 1000);
-	
-	setInterval(function () {
+		world.tick();
 		world.render();
-	}, 1000/30);
+	}, Game.DT_PER_TICK * 1000);
 };

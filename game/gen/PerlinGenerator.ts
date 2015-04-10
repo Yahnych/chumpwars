@@ -61,6 +61,8 @@ module gen {
 					}
 				}
 			}
+			
+			map.render();
 		}
 	}
 	

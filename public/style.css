@@ -3,9 +3,20 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-#c {
+#game-container {
 	border: 1px solid;
-} 
+	width: 800px;
+	height: 480px;
+	overflow: hidden;
+	position: relative
+}
+
+#game-container canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
 
 #chat {
 	position: fixed;

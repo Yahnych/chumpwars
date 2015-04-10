@@ -3,23 +3,28 @@
 module world {
 	
 	export class Map {
-		
+		canvas:HTMLCanvasElement;
 		context:CanvasRenderingContext2D;
 		data:ImageData;
-		pixels:number[]; // Uint8ClampedArray
+		pixels:any; // Uint8ClampedArray or number[], it seems nobody can make their mind up
 		
 		get width():number {
-			return this.data.width;
+			return this.canvas.width;
 		}
-		
 		get height():number {
-			return this.data.height;
+			return this.canvas.height;
 		}
 		
-		constructor(context:CanvasRenderingContext2D, width:number, height:number) {
-			this.context = context;
-			this.data = context.createImageData(width, height);
+		constructor(canvas:HTMLCanvasElement) {
+			this.canvas = canvas;
+			this.context = canvas.getContext('2d');
+			this.data = this.context.createImageData(canvas.width, canvas.height);
 			this.pixels = this.data.data;
+		}
+		
+		// you need to call this after you're done drawing, else your changes won't be displayed.
+		render():void {
+			this.context.putImageData(this.data, 0, 0);
 		}
 		
 		setPixel(x:number, y:number, r:number = 0, g:number = 0, b:number = 0, a:number = 255):void {
@@ -52,10 +57,5 @@ module world {
 			var a = this.pixels[i + 3];
 			return a != 0;
 		}
-		
-		render():void {
-			this.context.putImageData(this.data, 0, 0);
-		}
-		
 	}
 }

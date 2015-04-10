@@ -8,6 +8,7 @@ module world {
 	export class World {
 		
 		map: Map;
+		// the main canvas to which entities are drawn (the map gets its own canvas)
 		canvas: HTMLCanvasElement;
 		context: CanvasRenderingContext2D;
 		entities: Entity[] = [];
@@ -15,20 +16,17 @@ module world {
 		removedEntities: Entity[] = [];
 		
 		get width():number {
-			return this.map.width;
+			return this.canvas.width;
 		}
 		
 		get height():number {
-			return this.map.height;
+			return this.canvas.height;
 		}
 		
-		constructor(canvas:HTMLCanvasElement, width?:number, height?:number) {
-			this.context = canvas.getContext('2d');
-			this.canvas = canvas;
-			this.map = new Map(
-				this.context,
-				width || canvas.width,
-				height || canvas.height);
+		constructor(mapCanvas:HTMLCanvasElement, entityCanvas:HTMLCanvasElement) {
+			this.map = new Map(mapCanvas);
+			this.canvas = entityCanvas;
+			this.context = entityCanvas.getContext('2d');
 		}
 		
 		add(e:Entity):void {
@@ -48,14 +46,20 @@ module world {
 				e.tick();
 			});
 			
-			this.removedEntities.forEach(function (e:Entity) {
-				var i = entities.indexOf(e);
-				entities.splice(i, 1);
-			});
+			if (this.removedEntities.length !== 0) {
+				this.removedEntities.forEach(function (e:Entity) {
+					var i = entities.indexOf(e);
+					entities.splice(i, 1);
+				});
+				this.removedEntities = [];
+			}
 			
-			this.addedEntities.forEach(function (e:Entity) {
-				entities.push(e);
-			});
+			if (this.addedEntities.length !== 0) {
+				this.addedEntities.forEach(function (e:Entity) {
+					entities.push(e);
+				});
+				this.addedEntities = [];
+			}
 		}
 		
 		setPixel(x:number, y:number, r:number = 0, g:number = 0, b:number = 0, a:number = 255):void {
@@ -72,7 +76,7 @@ module world {
 		}
 		
 		render():void {
-			this.map.render();
+			this.context.clearRect(0, 0, this.width, this.height);
 			this.entities.forEach(function (e:Entity) {
 				e.render();
 			});
