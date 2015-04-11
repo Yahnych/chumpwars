@@ -5,6 +5,7 @@
 /// <reference path='gen/PerlinGenerator.ts' />
 /// <reference path='User.ts' />
 /// <reference path='Chat.ts' />
+/// <reference path='Keys.ts' />
 
 ///<reference path='../defs/socket.io-client/socket.io-client.d.ts' />
 
@@ -35,12 +36,13 @@ window.onload = function () {
 	});
 	User.register(socket);
 	Chat.register(socket);
+	Keys.register(socket);
+	
+	var e = new entity.Entity(200, 100, 8, 8);
 	
 	socket.on('start_game', function (data) {
 		console.log('starting game!');
 		gen.generate(data.seed);
-		
-		var e = new entity.Entity(200, 100, 8, 8);
 		world.add(e);
 	});
 	
@@ -48,9 +50,26 @@ window.onload = function () {
 		Chat.print('connection timed out');
 	});
 	
+	var timer = new Worker('timer.js');
+	
+	timer.postMessage(Game.DT_PER_TICK);
+	
+	timer.onmessage = function () {
+		if (Keys.hasTick()) {
+			var tick = Keys.popTick();
+			if (tick.keyHeld(Keys.LEFT)) e.velX = -50;
+			else if (tick.keyHeld(Keys.RIGHT)) e.velX = 50;
+			else e.velX = 0;
+			if (tick.keyDown(Keys.JUMP)) e.velY = -100;
+			
+			world.tick();
+		}
+	};
+	
+	//setInterval(function () {
+	//}, Game.DT_PER_TICK * 1000);
+	
 	setInterval(function () {
-		// really we need to pop from a buffer here this and only tick if there are input frames available from the server
-		world.tick();
 		world.render();
-	}, Game.DT_PER_TICK * 1000);
+	}, 30);
 };

@@ -31,6 +31,11 @@ module ClientData {
 	}
 }
 
+var keysUp:number[] = [];
+var keysDown:number[] = [];
+var keyBufferSize = 1;
+var keyBuffer:any = [];
+
 io.on('connection', function (client:Socket) {
 	
 	var locals:any = {};
@@ -50,6 +55,13 @@ io.on('connection', function (client:Socket) {
 		ClientData.set(client, undefined);
 	});
 	
+	client.on('key_down', function (key) {
+		keysDown.push(key);
+	});
+	client.on('key_up', function (key) {
+		keysUp.push(key);
+	});
+	
 	
 	client.emit('message', 'welcome!');
 	
@@ -57,6 +69,17 @@ io.on('connection', function (client:Socket) {
 		seed: seed
 	});
 });
+
+setInterval(function () {
+	keyBuffer.push([keysUp, keysDown]);
+	keysUp = [];
+	keysDown = [];
+	if (keyBuffer.length == keyBufferSize) {
+		console.log('sending key buffer', JSON.stringify(keyBuffer, null, false));
+		io.emit('key_buffer', keyBuffer);
+		keyBuffer = [];
+	}
+}, 1000/50);
 
 server.listen(3000, function () {
 	var host = server.address().address;

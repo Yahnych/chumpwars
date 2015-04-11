@@ -1,5 +1,8 @@
+///<reference path='../defs/socket.io-client/socket.io-client.d.ts' />
 
 module User {
+	
+	import Socket = SocketIOClient.Socket;
 	
 	export var name:string;
 
@@ -20,7 +23,7 @@ module User {
 		name = storedName;
 	}
 
-	export function register(socket:SocketIOClient.Socket) {
+	export function register(socket:Socket) {
 		socket.emit('user_info', {
 			name: name
 		});

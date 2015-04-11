@@ -3,6 +3,8 @@
 
 module Chat {
 	
+	import Socket = SocketIOClient.Socket;
+	
 	var chatForm: HTMLElement;
 	var chatInput: HTMLInputElement;
 	var chatMessages: HTMLElement;
@@ -19,7 +21,7 @@ module Chat {
 		chatMessages.appendChild(div);
 	}
 	
-	export function register(socket:SocketIOClient.Socket) {
+	export function register(socket:Socket) {
 		chatForm.onsubmit = function (event:Event) {
 			socket.emit('message', chatInput.value);
 			chatInput.value = '';
