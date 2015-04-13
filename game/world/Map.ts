@@ -28,6 +28,7 @@ module world {
 		}
 		
 		setPixel(x:number, y:number, r:number = 0, g:number = 0, b:number = 0, a:number = 255):void {
+			if (x < 0 || y < 0 || x >= this.width || y >= this.width) return;
 			var i = 4 * (x + y * this.width);
 			this.pixels[i] = r;
 			this.pixels[i + 1] = g;
@@ -44,6 +45,7 @@ module world {
 		}
 		
 		getPixel(x:number, y:number):[number,number,number,number] {
+			if (x < 0 || y < 0 || x >= this.width || y >= this.width) return [0, 0, 0, 0];
 			var i = 4 * (x + y * this.width);
 			var r = this.pixels[i];
 			var g = this.pixels[i + 1];
@@ -56,6 +58,16 @@ module world {
 			var i = 4 * (x + y * this.width);
 			var a = this.pixels[i + 3];
 			return a != 0;
+		}
+		
+		clearCircle(x:number, y:number, r:number):void {
+			rs = r * r;
+			for (var i=-r; i<=r; i++) {
+				for (var j=-r; j<=r; j++) {
+					var dist = i*i + j*j;
+					if (dist <= rs) setPixel(x+i, y+j, 0, 0, 0, 0);
+				}
+			}
 		}
 	}
 }
