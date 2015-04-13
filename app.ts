@@ -72,13 +72,13 @@ io.on('connection', function (client:Socket) {
 
 setInterval(function () {
 	keyBuffer.push([keysUp, keysDown]);
-	keysUp = [];
-	keysDown = [];
 	if (keyBuffer.length == keyBufferSize) {
-		console.log('sending key buffer', JSON.stringify(keyBuffer, null, false));
+		if (keysDown.length > 0 || keysUp.length > 0) console.log('sending key buffer', JSON.stringify(keyBuffer, null, false));
 		io.emit('key_buffer', keyBuffer);
 		keyBuffer = [];
 	}
+	keysUp = [];
+	keysDown = [];
 }, 1000/50);
 
 server.listen(3000, function () {
