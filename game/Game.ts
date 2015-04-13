@@ -69,7 +69,15 @@ window.onload = function () {
 	//setInterval(function () {
 	//}, Game.DT_PER_TICK * 1000);
 	
-	setInterval(function () {
-		world.render();
-	}, 30);
+	if (requestAnimationFrame) {
+		var render = function() {
+			world.render();
+			requestAnimationFrame(render);
+		};
+		requestAnimationFrame(render);
+	} else {
+		setInterval(function () {
+			world.render();
+		}, 30);
+	}
 };
