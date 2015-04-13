@@ -61,11 +61,11 @@ module world {
 		}
 		
 		clearCircle(x:number, y:number, r:number):void {
-			rs = r * r;
+			var rs = r * r;
 			for (var i=-r; i<=r; i++) {
 				for (var j=-r; j<=r; j++) {
 					var dist = i*i + j*j;
-					if (dist <= rs) setPixel(x+i, y+j, 0, 0, 0, 0);
+					if (dist <= rs) this.setPixel(x+i, y+j, 0, 0, 0, 0);
 				}
 			}
 		}

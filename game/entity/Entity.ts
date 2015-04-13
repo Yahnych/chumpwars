@@ -106,7 +106,7 @@ module entity {
 						break;
 					}
 				}
-				else if (!this.collideMap(this.x+sign, this.y+1, false)) {
+				else if (!this.collideMap(this.x+sign, this.y+1, false) && this.collideMap(this.x, this.y+1, false)) {
 					this.y++;
 				}
 				this.x += sign;
