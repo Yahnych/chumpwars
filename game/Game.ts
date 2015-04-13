@@ -50,11 +50,7 @@ window.onload = function () {
 		Chat.print('connection timed out');
 	});
 	
-	var timer = new Worker('timer.js');
-	
-	timer.postMessage(Game.DT_PER_TICK);
-	
-	timer.onmessage = function () {
+	var update = function () {
 		if (Keys.hasTick()) {
 			var tick = Keys.popTick();
 			if (tick.keyHeld(Keys.LEFT)) e.velX = -50;
@@ -66,8 +62,13 @@ window.onload = function () {
 		}
 	};
 	
-	//setInterval(function () {
-	//}, Game.DT_PER_TICK * 1000);
+	try {
+		var timer = new Worker('timer.js');
+		timer.postMessage(Game.DT_PER_TICK);
+		timer.onmessage = update;
+	} catch (e) {
+		setInterval(update, Game.DT_PER_TICK * 1000);
+	}
 	
 	if (requestAnimationFrame) {
 		var render = function() {
@@ -76,8 +77,6 @@ window.onload = function () {
 		};
 		requestAnimationFrame(render);
 	} else {
-		setInterval(function () {
-			world.render();
-		}, 30);
+		setInterval(world.render, 30);
 	}
 };
