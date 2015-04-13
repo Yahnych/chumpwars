@@ -1,5 +1,6 @@
 /// <reference path='util/Random.ts' />
 /// <reference path='entity/Entity.ts' />
+/// <reference path='entity/Worm.ts' />
 /// <reference path='world/World.ts' />
 /// <reference path='world/Map.ts' />
 /// <reference path='gen/PerlinGenerator.ts' />
@@ -38,7 +39,7 @@ window.onload = function () {
 	Chat.register(socket);
 	Keys.register(socket);
 	
-	var e = new entity.Entity(200, 100, 8, 8);
+	var e = new entity.Worm(200, 100, 8, 8);
 	
 	socket.on('start_game', function (data) {
 		console.log('starting game!');
@@ -57,10 +58,16 @@ window.onload = function () {
 	timer.onmessage = function () {
 		if (Keys.hasTick()) {
 			var tick = Keys.popTick();
-			if (tick.keyHeld(Keys.LEFT)) e.velX = -50;
-			else if (tick.keyHeld(Keys.RIGHT)) e.velX = 50;
-			else e.velX = 0;
-			if (tick.keyDown(Keys.JUMP)) e.velY = -100;
+			if (e.isOnFloor()) e.velX = 0;
+			if (tick.keyHeld(Keys.LEFT)) {
+				if (e.isOnFloor()) e.velX = -50;
+				else e.velX -= 1;
+			}
+			if (tick.keyHeld(Keys.RIGHT)) {
+				if (e.isOnFloor()) e.velX = 50;
+				else e.velX += 1;
+			}
+			if (tick.keyHeld(Keys.JUMP) && e.isOnFloor()) e.velY = -100;
 			
 			world.tick();
 		}

@@ -13,12 +13,14 @@ module entity {
 		velY = 0;
 		gravity = 200.0;
 		bounce = 0;
+		onFloor: number;
 		
 		constructor(x = 0, y = 0, width = 0, height = 0) {
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
+			this.onFloor = -1;
 		}
 		
 		// Called when the entity is added to the world
@@ -86,8 +88,8 @@ module entity {
 		}
 		
 		
-		private residueX = 0;
-		private residueY = 0;
+		protected residueX = 0;
+		protected residueY = 0;
 		
 		resolveMovementX(dx:number): void {
 			this.residueX += dx;
@@ -98,19 +100,12 @@ module entity {
 			
 			while (dx != 0) {
 				if (this.collideMap(this.x+sign, this.y, false)) {
-					if (!this.collideMap(this.x+sign, this.y-1, false)) {
-						this.y--;
-					}
-					else {
-						this.velX *= -this.bounce;
-						break;
-					}
-				}
-				else if (!this.collideMap(this.x+sign, this.y+1, false) && this.collideMap(this.x, this.y+1, false)) {
-					this.y++;
+					this.velX *= -this.getBounce();
+					break;
 				}
 				this.x += sign;
 				dx -= sign;
+				this.onFloor = -1;
 			}
 		}
 		
@@ -123,11 +118,12 @@ module entity {
 			
 			while (dy != 0) {
 				if (this.collideMap(this.x, this.y+sign, false)) {
-					this.velY *= -this.bounce;
+					this.velY *= -this.getBounce();
 					break;
 				}
 				this.y += sign;
 				dy -= sign;
+				this.onFloor = -1;
 			}
 		}
 		
@@ -143,9 +139,22 @@ module entity {
 		}
 		
 		isAtRest(): boolean {
-			//return Math.abs(this.velX) < 0.01 && Math.abs(this.velY) < 0.01;
 			return Math.abs(this.velX) < Game.MIN_SPEED && Math.abs(this.velY) < Game.MIN_SPEED;
 		}
+		
+		isOnFloor(): boolean {
+			if (this.onFloor == -1) {
+				if (this.collideMap(this.x, this.y+1, false)) this.onFloor = 1;
+				else this.onFloor = 0;
+			}
+			return this.onFloor === 1;
+		}
+		
+		getBounce(): number {
+			return this.bounce;
+		}
+		
+		hurt(damage:number): void {}
 		
 	}
 	
