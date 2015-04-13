@@ -2,7 +2,8 @@
 d.ts
 *.map
 
-public/*.js
+public/game.js
+public/libs.js
 app.js
 
 lib-cov
