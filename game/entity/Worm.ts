@@ -1,14 +1,18 @@
 ///<reference path='../Game.ts' />
 /// <reference path='../weapon/Weapon.ts' />
-/// <reference path='../weapon/Bazooka.ts' />
+/// <reference path='../weapon/Grenade.ts' />
 
 module entity {
 	import Weapon = weapon.Weapon;
 	
 	export class Worm extends Entity {
+		constructor(x:number, y:number) {
+			super(x-5, y-10, 10, 20);
+		}
+		
 		type = "Worm";
 		lastFacing = 1;
-		currentWeapon:Weapon = new weapon.Bazooka();
+		currentWeapon:Weapon = new weapon.Grenade();
 		
 		// Called when the entity is added to the world
 		added(): void {}

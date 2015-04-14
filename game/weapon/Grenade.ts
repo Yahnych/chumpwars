@@ -1,14 +1,14 @@
 /// <reference path='../Keys.ts' />
 /// <reference path='../entity/Worm.ts' />
-/// <reference path='../entity/BazookaProjectile.ts' />
+/// <reference path='../entity/GrenadeProjectile.ts' />
 
 module weapon
 {
 	import Worm = entity.Worm;
 	import Tick = Keys.Tick;
-	import BazookaProjectile = entity.BazookaProjectile;
+	import GrenadeProjectile = entity.GrenadeProjectile;
 	
-	export class Bazooka extends Weapon {
+	export class Grenade extends Weapon {
 		private aimAngle = 0;
 		private fireStrength = 0;
 		private fireState = -1;
@@ -26,7 +26,7 @@ module weapon
 				if (!keys.keyHeld(Keys.FIRE)) {
 					//this.fireState = 1;
 					this.fireState = -1;
-					var proj = new BazookaProjectile(worm.x+worm.width/2+1, worm.y+worm.height/2+1);
+					var proj = new GrenadeProjectile(worm.x+worm.width/2+1, worm.y+worm.height/2+1, 3);
 					var newAngle = -this.aimAngle;
 					newAngle = newAngle * Math.PI / 180;
 					var x = Math.cos(newAngle) * this.fireStrength * 7 * worm.lastFacing;
@@ -68,7 +68,7 @@ module weapon
 			if (this.fireStrength == 90) {
 				//this.fireState = 1;
 				this.fireState = -1;
-				var proj = new BazookaProjectile(worm.x+worm.width/2+1, worm.y+worm.height/2+1);
+				var proj = new GrenadeProjectile(worm.x+worm.width/2+1, worm.y+worm.height/2+1, 3);
 				var newAngle = -this.aimAngle;
 				newAngle = newAngle * Math.PI / 180;
 				var x = Math.cos(newAngle) * this.fireStrength * 7 * worm.lastFacing;

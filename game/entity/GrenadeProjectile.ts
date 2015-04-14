@@ -4,21 +4,26 @@
 module entity {
 	import Worm = entity.Worm;
 	
-	export class BazookaProjectile extends Entity {
-		constructor(x:number, y:number) {
+	export class GrenadeProjectile extends Entity {
+		private timer:number;
+		bounce = 0.7;
+		
+		constructor(x:number, y:number, timer:number) {
 			super(x, y, 2, 2);
+			this.timer = timer * Game.TICK_RATE;
 		}
 		
 		tick(): void {
 			super.tick();
-			if (this.justCollided) {
-				this.world.explosion(this.x, this.y, 20, function (e:Entity) {
+			this.timer--;
+			if (this.timer == 0) {
+				this.world.explosion(this.x, this.y, 30, function (e:Entity) {
 					if (e.type === "Worm") {
 						var xDist = e.x + e.width/2;
 						var yDist = e.y + e.height/2;
 						var dist = Math.sqrt(xDist*xDist + yDist*yDist);
-						if(dist <= 5) dist = 0;
-						else dist -= 5;
+						if(dist <= 15) dist = 0;
+						else dist -= 15;
 						e.hurt(Math.round(Math.sqrt(15-dist)*11.62));
 					}
 				}, function (e:Entity) {

@@ -44,7 +44,7 @@ window.onload = function () {
 	Chat.register(socket);
 	Keys.register(socket);
 	
-	var e = new entity.Worm(200, 100, 8, 8);
+	var e = new entity.Worm(200, 100);
 	
 	socket.on('start_game', function (data) {
 		console.log('starting game!');
