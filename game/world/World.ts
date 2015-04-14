@@ -84,5 +84,13 @@ module world {
 				e.render();
 			});
 		}
+		
+		explosion(x:number, y:number, r:number, damageFunction:Function, knockbackFunction:Function):void {
+			this.map.clearCircle(x, y, r);
+			this.entities.forEach(function (e:Entity) {
+				damageFunction(e);
+				knockbackFunction(e);
+			});
+		}
 	}
 }

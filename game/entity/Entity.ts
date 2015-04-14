@@ -14,6 +14,11 @@ module entity {
 		gravity = 200.0;
 		bounce = 0;
 		onFloor: number;
+		justCollided: boolean;
+		lastCollisionXSpeed: number;
+		lastCollisionYSpeed: number;
+		
+		type:string;
 		
 		constructor(x = 0, y = 0, width = 0, height = 0) {
 			this.x = x;
@@ -100,6 +105,9 @@ module entity {
 			
 			while (dx != 0) {
 				if (this.collideMap(this.x+sign, this.y, false)) {
+					this.justCollided = true;
+					this.lastCollisionXSpeed = this.velX;
+					this.lastCollisionYSpeed = this.velY;
 					this.velX *= -this.getBounce();
 					break;
 				}
@@ -118,6 +126,9 @@ module entity {
 			
 			while (dy != 0) {
 				if (this.collideMap(this.x, this.y+sign, false)) {
+					this.justCollided = true;
+					this.lastCollisionXSpeed = this.velX;
+					this.lastCollisionYSpeed = this.velY;
 					this.velY *= -this.getBounce();
 					break;
 				}
@@ -128,6 +139,7 @@ module entity {
 		}
 		
 		tick(): void {
+			this.justCollided = false;
 			this.velY += this.gravity * Game.DT_PER_TICK;
 			this.resolveMovementX(this.velX * Game.DT_PER_TICK);
 			this.resolveMovementY(this.velY * Game.DT_PER_TICK);
@@ -135,6 +147,7 @@ module entity {
 		
 		render():void {
 			var c = this.world.context;
+			c.fillStyle = "BLACK";
 			c.fillRect(this.x, this.y, this.width, this.height);
 		}
 		

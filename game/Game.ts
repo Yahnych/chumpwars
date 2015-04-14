@@ -7,6 +7,7 @@
 /// <reference path='User.ts' />
 /// <reference path='Chat.ts' />
 /// <reference path='Keys.ts' />
+/// <reference path='weapon/Weapon.ts' />
 
 ///<reference path='../defs/socket.io-client/socket.io-client.d.ts' />
 
@@ -17,6 +18,8 @@ module Game {
 	export var TICK_RATE = 60;
 	export var DT_PER_TICK = 1/TICK_RATE;
 	export var MIN_SPEED = DT_PER_TICK * 2;
+	
+	export var aim:HTMLImageElement;
 }
 
 window.onload = function () {
@@ -24,6 +27,8 @@ window.onload = function () {
 	var entityCanvas = <HTMLCanvasElement> document.getElementById('entity-canvas');
 	var world = new World(mapCanvas, entityCanvas);
 	var gen = new PerlinGenerator(world);
+	
+	Game.aim = <HTMLImageElement> document.getElementById('aim');
 
 	Chat.init();
 	User.init();
@@ -55,15 +60,18 @@ window.onload = function () {
 		if (Keys.hasTick()) {
 			var tick = Keys.popTick();
 			if (e.isOnFloor()) e.velX = 0;
-			if (tick.keyHeld(Keys.LEFT)) {
-				if (e.isOnFloor()) e.velX = -50;
-				else e.velX -= 1;
+			e.currentWeapon.handleControls(e, tick);
+			if (e.canControl()) {
+				if (tick.keyHeld(Keys.LEFT)) {
+					if (e.isOnFloor()) e.velX = -50;
+					else e.velX -= 1;
+				}
+				if (tick.keyHeld(Keys.RIGHT)) {
+					if (e.isOnFloor()) e.velX = 50;
+					else e.velX += 1;
+				}
+				if (tick.keyHeld(Keys.JUMP) && e.isOnFloor()) e.velY = -100;
 			}
-			if (tick.keyHeld(Keys.RIGHT)) {
-				if (e.isOnFloor()) e.velX = 50;
-				else e.velX += 1;
-			}
-			if (tick.keyHeld(Keys.JUMP) && e.isOnFloor()) e.velY = -100;
 			
 			world.tick();
 		}
