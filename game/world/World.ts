@@ -76,6 +76,9 @@ module world {
 		}
 		
 		render():void {
+			if (this.map.dirty) {
+				this.map.render();
+			}
 			this.context.clearRect(0, 0, this.width, this.height);
 			this.entities.forEach(function (e:Entity) {
 				e.render();
